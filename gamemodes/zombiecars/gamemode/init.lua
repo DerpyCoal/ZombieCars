@@ -122,15 +122,16 @@ hook.Add("PlayerDeath", "CheckTheKiller", function(victim, inflitor, attacker)
 	end
 end)
 
+local Npcs = {}
+Npcs["npc_zombie"] = 10
+Npcs["npc_poisonzombie"] = 20
+Npcs["npc_fastzombie"] = 30
+Npcs["npc_headcrab_fast"] = 40
+
 hook.Add("OnNPCKilled", "KCheck", function(npc, attacker, inflictor) 
 	if attacker:GetClass() == "prop_vehicle_jeep" then
 		if attacker.Owner then
-                        local ds
-                        if npc:GetClass() == "npc_zombie" then ds = 10
-                        elseif npc:GetClass() == "npc_poisonzombie" then ds = 20
-                        elseif npc:GetClass() == "npc_fastzombie" then ds = 30
-                        elseif npc:GetClass() == "npc_headcrab_fast" then ds = 40 
-                        else return end
+                        local ds = Npcs[npc:GetClass()] or 0
                         killshout( ds, attacker.Owner, npc, false )
 			attacker.Owner:AddFrags(ds)
 			attacker.Owner:EmitSound("bading.mp3")
