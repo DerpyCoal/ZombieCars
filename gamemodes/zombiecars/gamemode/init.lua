@@ -144,7 +144,7 @@ end )
 hook.Add( "EntityTakeDamage", "dadder", function( vic, data )
 	local dmgat = data:GetAttacker().dmga
 	if !(dmgat == nil) then return end
-	vic:SetHealth( vic:Health - dmgat )
+	vic:SetHealth( vic:Health() - dmgat )
 end )
 
 hook.Add("OnNPCKilled", "KCheck", function(npc, attacker, inflictor) 
