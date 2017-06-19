@@ -1,6 +1,7 @@
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
 
+include( "pshop.lua" )
 include( "shared.lua" )
 
 local nohurt = true
@@ -143,7 +144,7 @@ end )
 
 hook.Add( "EntityTakeDamage", "dadder", function( vic, data )
 	local dmgat = data:GetAttacker().dmga
-	if !(dmgat == nil) then return end
+	if (dmgat == nil) then return end
 	vic:SetHealth( vic:Health() - dmgat )
 end )
 
