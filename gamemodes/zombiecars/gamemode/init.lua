@@ -1,6 +1,7 @@
 AddCSLuaFile( "cl_init.lua" )
 AddCSLuaFile( "shared.lua" )
 
+include( "pshop.lua" )
 include( "shared.lua" )
 
 local nohurt = true
@@ -70,6 +71,18 @@ for _, v in pairs(player.GetAll()) do
 end
 end
 
+hook.Add( "PlayerSay", "OPS", function( ply, text, team )
+	text = string.lower( text )
+	if ( text == "!ops" ) then
+		ply:ChatPrint("Shop: \n+5 Damage: Buy with !getitem 1")
+		return ""
+	end
+	if ( text == "!getitem 1" ) then
+		buywp(ply, 1)
+		return ""
+	end
+end )
+
 function GM:PlayerInitialSpawn(ply)
 for _, v in pairs(player.GetAll()) do
 	v:ChatPrint( ply:Nick() .. " has joined the game!" )
@@ -81,7 +94,7 @@ car:SetKeyValue("vehiclescript","scripts/vehicles/jeep_test.txt")
 car:SetPos( ply:GetPos() + Vector(0,0,40) + ply:GetForward() * 100  )
 car.Owner = ply
 car:Spawn()
-ply:ChatPrint( "Find your car!" )
+ply:ChatPrint( "Find your car! Use chat command !OPS to open the point shop!" )
 end )
 end
 
@@ -122,16 +135,15 @@ hook.Add("PlayerDeath", "CheckTheKiller", function(victim, inflitor, attacker)
 	end
 end)
 
-local Npcs = {}
-Npcs["npc_zombie"] = 10
-Npcs["npc_poisonzombie"] = 20
-Npcs["npc_fastzombie"] = 30
-Npcs["npc_headcrab_fast"] = 40
-
 hook.Add("OnNPCKilled", "KCheck", function(npc, attacker, inflictor) 
 	if attacker:GetClass() == "prop_vehicle_jeep" then
 		if attacker.Owner then
-                        local ds = Npcs[npc:GetClass()] or 0
+                        local ds
+                        if npc:GetClass() == "npc_zombie" then ds = 10
+                        elseif npc:GetClass() == "npc_poisonzombie" then ds = 20
+                        elseif npc:GetClass() == "npc_fastzombie" then ds = 30
+                        elseif npc:GetClass() == "npc_headcrab_fast" then ds = 40 
+                        else return end
                         killshout( ds, attacker.Owner, npc, false )
 			attacker.Owner:AddFrags(ds)
 			attacker.Owner:EmitSound("bading.mp3")
@@ -139,6 +151,12 @@ hook.Add("OnNPCKilled", "KCheck", function(npc, attacker, inflictor)
 	end
 end)
 
+hook.Add("EntityTakeDamage", "dmgadder", function(tg, atkinfo)
+	local pdmgl = atkinfo:GetAttacker().pdmg
+	if pdmgl == nil then return end
+	tg:SetHealth( tg:Health() - pdmgl )
+end )
+ 
 function killshout( dollars, killer, victim, isplayer )
   for k, v in pairs(player.GetAll()) do
   if isplayer then
