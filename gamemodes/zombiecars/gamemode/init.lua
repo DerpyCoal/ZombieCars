@@ -81,7 +81,7 @@ car:SetKeyValue("vehiclescript","scripts/vehicles/jeep_test.txt")
 car:SetPos( ply:GetPos() + Vector(0,0,40) + ply:GetForward() * 100  )
 car.Owner = ply
 car:Spawn()
-ply:ChatPrint( "Find your car!" )
+ply:ChatPrint( "Find your car! Use chat command !OPS to open the point shop!" )
 end )
 end
 
@@ -127,6 +127,18 @@ Npcs["npc_zombie"] = 10
 Npcs["npc_poisonzombie"] = 20
 Npcs["npc_fastzombie"] = 30
 Npcs["npc_headcrab_fast"] = 40
+
+hook.Add( "PlayerSay", "OPS", function( ply, text, team )
+	text = string.lower( text )
+	if ( text == "!ops" ) then
+		ply:ChatPrint("Shop: \n+5 Damage: Buy with !getitem 1")
+		return ""
+	end
+	if ( text == "!getitem 1" ) then
+		buywp(ply, 1)
+		return ""
+	end
+end )
 
 hook.Add("OnNPCKilled", "KCheck", function(npc, attacker, inflictor) 
 	if attacker:GetClass() == "prop_vehicle_jeep" then
