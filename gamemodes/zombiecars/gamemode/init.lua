@@ -136,6 +136,7 @@ hook.Add( "PlayerSay", "OPS", function( ply, text, team )
 		return ""
 	end
 	if ( text == "!getitem 1" ) then
+		if ply.dmga == nil then ply.dmga = 0
 		if buywp(ply, 1) then ply.dmga = (ply.dmga + 5)
 		return ""
 		end
