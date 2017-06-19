@@ -135,9 +135,16 @@ hook.Add( "PlayerSay", "OPS", function( ply, text, team )
 		return ""
 	end
 	if ( text == "!getitem 1" ) then
-		buywp(ply, 1)
+		if buywp(ply, 1) then ply.dmga = (ply.dmga + 5)
 		return ""
+		end
 	end
+end )
+
+hook.Add( "EntityTakeDamage", "dadder", function( vic, data )
+	local dmgat = data:GetAttacker().dmga
+	if !(dmgat == nil) then return end
+	vic:SetHealth( vic:Health - dmgat )
 end )
 
 hook.Add("OnNPCKilled", "KCheck", function(npc, attacker, inflictor) 
